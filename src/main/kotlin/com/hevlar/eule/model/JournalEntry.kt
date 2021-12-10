@@ -1,6 +1,7 @@
 package com.hevlar.eule.model
 
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -13,7 +14,7 @@ open class JournalEntry(
     val id: Long,
 
     @Column(name = "txDate")
-    var txDate: Date,
+    var txDate: LocalDate,
 
     @Column(name = "desc")
     var desc: String,

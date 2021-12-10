@@ -3,7 +3,6 @@ package com.hevlar.eule.controller
 import com.hevlar.eule.model.Account
 import com.hevlar.eule.service.AccountService
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
@@ -28,9 +27,12 @@ class AccountController(val accountService: AccountService) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createAccount(@RequestBody account: Account): Account {
+        if(accountService.existAccount(account.id))
+            throw ResponseStatusException(HttpStatus.CONFLICT, "Account - $account already exists")
+
         return try{
             accountService.saveAccount(account)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid account - $account")
         }
     }

@@ -1,6 +1,7 @@
 package com.hevlar.eule.model
 
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -27,7 +28,8 @@ open class Account(
     open var openBal: BigDecimal,
 
     @Column(name = "openDate")
-    open var openDate: Date)
+    open var openDate: LocalDate
+)
 {
 
 
