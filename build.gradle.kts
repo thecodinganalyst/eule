@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.6.0"
     kotlin("plugin.spring") version "1.6.0"
     kotlin("plugin.jpa") version "1.6.0"
+    jacoco
 }
 
 group = "com.hevlar"
@@ -34,6 +35,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.1") {
         exclude(module = "mockito-core")
     }
+    testImplementation("io.cucumber:cucumber-java8:7.1.0")
+    testImplementation("io.cucumber:cucumber-junit:7.1.0")
+    implementation(group= "io.cucumber", name="cucumber-spring", version="6.10.4")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 }
 
 tasks.withType<KotlinCompile> {
@@ -45,4 +50,38 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+// Cucumber Settings
+
+val cucumberRuntime: Configuration by configurations.creating {
+    extendsFrom(configurations["testImplementation"])
+}
+
+task("cucumber") {
+    dependsOn("assemble", "compileTestJava")
+    doLast {
+        javaexec {
+            mainClass.set("io.cucumber.core.cli.Main")
+            classpath = cucumberRuntime + sourceSets.main.get().output + sourceSets.test.get().output
+            // Change glue for your project package where the step definitions are.
+            // And where the feature files are.
+            args = listOf("--plugin", "pretty", "--glue", "com.hevlar.eule.feature", "src/test/resources")
+            // Configure jacoco agent for the test coverage.
+            val jacocoAgent = zipTree(configurations.jacocoAgent.get().singleFile)
+                .filter { it.name == "jacocoagent.jar" }
+                .singleFile
+            jvmArgs = listOf("-javaagent:$jacocoAgent=destfile=$buildDir/results/jacoco/cucumber.exec,append=false")
+        }
+    }
+}
+
+// Cucumber Settings
+
+tasks.jacocoTestReport {
+    // Give jacoco the file generated with the cucumber tests for the coverage.
+    executionData(files("$buildDir/jacoco/test.exec", "$buildDir/results/jacoco/cucumber.exec"))
+    reports {
+        xml.required.set(true)
+    }
 }
