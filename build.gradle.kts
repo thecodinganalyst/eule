@@ -29,7 +29,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    runtimeOnly("com.h2database:h2:2.0.202")
+    testImplementation("com.h2database:h2:2.0.202")
     runtimeOnly("org.springframework.boot:spring-boot-devtools:2.6.1")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.1") {
@@ -37,8 +37,10 @@ dependencies {
     }
     testImplementation("io.cucumber:cucumber-java8:7.1.0")
     testImplementation("io.cucumber:cucumber-junit:7.1.0")
-    implementation(group= "io.cucumber", name="cucumber-spring", version="6.10.4")
+    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
+    testImplementation(group= "io.cucumber", name="cucumber-spring", version="6.10.4")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
 }
 
 tasks.withType<KotlinCompile> {
@@ -59,14 +61,15 @@ val cucumberRuntime: Configuration by configurations.creating {
 }
 
 task("cucumber") {
-    dependsOn("assemble", "compileTestJava")
+    group = "verification"
+    dependsOn("assemble", "compileTestKotlin")
     doLast {
         javaexec {
             mainClass.set("io.cucumber.core.cli.Main")
             classpath = cucumberRuntime + sourceSets.main.get().output + sourceSets.test.get().output
             // Change glue for your project package where the step definitions are.
             // And where the feature files are.
-            args = listOf("--plugin", "pretty", "--glue", "com.hevlar.eule.feature", "src/test/resources")
+            args = listOf("--plugin", "pretty", "--glue", "com.hevlar.eule.cucumber", "src/test/resources")
             // Configure jacoco agent for the test coverage.
             val jacocoAgent = zipTree(configurations.jacocoAgent.get().singleFile)
                 .filter { it.name == "jacocoagent.jar" }
@@ -83,5 +86,6 @@ tasks.jacocoTestReport {
     executionData(files("$buildDir/jacoco/test.exec", "$buildDir/results/jacoco/cucumber.exec"))
     reports {
         xml.required.set(true)
+        html.required.set(true)
     }
 }

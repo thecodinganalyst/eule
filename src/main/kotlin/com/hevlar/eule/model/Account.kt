@@ -4,6 +4,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
+import kotlin.reflect.jvm.javaConstructor
 
 @Entity
 @Table(name="Accounts")
@@ -31,6 +32,7 @@ open class Account(
     open var openDate: LocalDate
 )
 {
-
-
+    constructor(id: String, name: String, group: String, curr: String, openBal: String, openDate: String) : this(
+        id, name, AccountGroup.valueOf(group), Currency.getInstance(curr), BigDecimal(openBal), LocalDate.parse(openDate)
+    )
 }
