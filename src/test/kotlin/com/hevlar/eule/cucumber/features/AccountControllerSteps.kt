@@ -3,7 +3,6 @@ package com.hevlar.eule.cucumber.features
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.hevlar.eule.controller.AccountController
-import com.hevlar.eule.cucumber.CucumberSpringConfiguration
 import com.hevlar.eule.model.Account
 import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
