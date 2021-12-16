@@ -16,7 +16,7 @@ class AccountService (val accountRepository: AccountRepository) {
     }
 
     fun getAccount(accountId: String): Account{
-        return accountRepository.getById(accountId)
+        return accountRepository.findById(accountId).orElseThrow()
     }
 
     fun listAccounts(): List<Account>{

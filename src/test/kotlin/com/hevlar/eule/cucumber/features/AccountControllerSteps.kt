@@ -14,25 +14,27 @@ import org.springframework.web.server.ResponseStatusException
 
 class AccountControllerSteps(@Autowired val accountController: AccountController): En {
 
-    var givenAccountList: List<Account> = listOf()
-    var addAccountResults: List<Result<Account>> = listOf()
+    private var givenAccountList: List<Account> = listOf()
+    private var accountResults: MutableList<Result<Account>> = mutableListOf()
     private var mapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
 
     init {
 
         Before { _ ->
-            addAccountResults = listOf()
+            accountResults = mutableListOf()
+            givenAccountList = listOf()
         }
 
         When("the following accounts are added"){ table: DataTable ->
-            addAccountResults = addAccountsFromDataTable(table)
+            accountResults = addAccountsFromDataTable(table)
         }
 
         Then("the following accounts are returned"){ table: DataTable ->
             val rows = table.asMaps()
             rows.mapIndexed { i, it ->
                 val expected = mapper.convertValue(it, Account::class.java)
-                assertThat(expected, samePropertyValuesAs(addAccountResults[i].getOrThrow()))
+                val account = accountResults[i].getOrThrow()
+                assertThat(expected, samePropertyValuesAs(account))
             }
         }
 
@@ -43,34 +45,51 @@ class AccountControllerSteps(@Autowired val accountController: AccountController
         }
 
         Then("HttpStatus {int} is expected") { statusCode: Int ->
-            addAccountResults.any {
+            accountResults.any {
                 it.isFailure &&
-                        it.exceptionOrNull() is ResponseStatusException &&
-                        (it.exceptionOrNull() as ResponseStatusException).status == HttpStatus.valueOf(statusCode)
+                it.exceptionOrNull() is ResponseStatusException &&
+                (it.exceptionOrNull() as ResponseStatusException).status == HttpStatus.valueOf(statusCode)
             }
         }
 
+        When("account list is requested") {
+            listAccountsFromDatabase()
+        }
+
+        When("the account with id {string} is requested") { accountId: String ->
+            val account = getAccountFromDatabase(accountId)
+            accountResults.add(account)
+        }
+    }
+
+    private fun getAccountFromDatabase(accountId: String): Result<Account>{
+        return try {
+            val account = accountController.getAccount(accountId)
+            Result.success(account)
+        }catch (t: Throwable){
+            Result.failure(t)
+        }
     }
 
     private fun listAccountsFromDatabase(): List<Account>{
         return accountController.listAccounts()
     }
 
-    private fun getAccountsFromDataTable(table: DataTable): List<Account>{
+    private fun getAccountsFromDataTable(table: DataTable): MutableList<Account>{
         return table.asMaps().map {
             mapper.convertValue(it, Account::class.java)
-        }
+        }.toMutableList()
     }
 
-    private fun addAccountsFromDataTable(table: DataTable): List<Result<Account>> {
-        val addedAccounts = getAccountsFromDataTable(table).map {
+    private fun addAccountsFromDataTable(table: DataTable): MutableList<Result<Account>> {
+        return getAccountsFromDataTable(table).map {
             try {
-                Result.success(accountController.createAccount(it))
+                val account = accountController.createAccount(it)
+                Result.success(account)
             }catch (t: Throwable){
                 Result.failure(t)
             }
-        }
-        return addedAccounts
+        }.toMutableList()
     }
 
 }
