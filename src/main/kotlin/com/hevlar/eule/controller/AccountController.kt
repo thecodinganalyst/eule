@@ -28,12 +28,13 @@ class AccountController(val accountService: AccountService) {
     @ResponseStatus(HttpStatus.CREATED)
     fun createAccount(@RequestBody account: Account): Account {
         if(accountService.existAccount(account.id))
-            throw ResponseStatusException(HttpStatus.CONFLICT, "Account - $account already exists")
+            throw ResponseStatusException(HttpStatus.CONFLICT, "Account - ${account.id} already exists")
 
         return try{
             accountService.saveAccount(account)
+
         } catch (e: Exception) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid account - $account")
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid account - ${account.id}")
         }
     }
 

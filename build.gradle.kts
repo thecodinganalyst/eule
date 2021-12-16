@@ -29,8 +29,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    testImplementation("com.h2database:h2:2.0.202")
-    runtimeOnly("org.springframework.boot:spring-boot-devtools:2.6.1")
+    implementation("com.h2database:h2:2.0.202")
+//    runtimeOnly("org.springframework.boot:spring-boot-devtools:2.6.1")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.1") {
         exclude(module = "mockito-core")
@@ -40,7 +40,7 @@ dependencies {
     testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
     testImplementation(group= "io.cucumber", name="cucumber-spring", version="6.10.4")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.2")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
 }
 
 tasks.withType<KotlinCompile> {
