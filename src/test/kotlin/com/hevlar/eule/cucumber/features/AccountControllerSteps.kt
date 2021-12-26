@@ -8,6 +8,7 @@ import io.cucumber.datatable.DataTable
 import io.cucumber.java8.En
 import org.springframework.beans.factory.annotation.Autowired
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
@@ -25,8 +26,28 @@ class AccountControllerSteps(@Autowired val accountController: AccountController
             givenAccountList = listOf()
         }
 
+        Given("the following accounts already exist") { table: DataTable ->
+            val tableAccounts = getAccountsFromDataTable(table)
+            val accountIds = tableAccounts
+                .mapNotNull { it.getOrNull() }
+                .map { it.id }
+            givenAccountList = accountIds
+                .map { getAccountFromDatabase(it) }
+                .mapNotNull { it.getOrNull() }
+            assertThat(givenAccountList.size, equalTo(accountIds.size))
+        }
+
         When("the following accounts are added"){ table: DataTable ->
             accountResults = addAccountsFromDataTable(table)
+        }
+
+        When("account list is requested") {
+            accountResults = listAccountsFromDatabase()
+        }
+
+        When("the account with id {string} is requested") { accountId: String ->
+            val account = getAccountFromDatabase(accountId)
+            accountResults.add(account)
         }
 
         Then("the following accounts are returned"){ table: DataTable ->
@@ -38,28 +59,14 @@ class AccountControllerSteps(@Autowired val accountController: AccountController
             }
         }
 
-        Given("the following accounts already exist") { table: DataTable ->
-            givenAccountList = addAccountsFromDataTable(table).mapNotNull {
-                it.getOrNull()
-            }
-        }
-
         Then("HttpStatus {int} is expected") { statusCode: Int ->
-            accountResults.any {
-                it.isFailure &&
-                it.exceptionOrNull() is ResponseStatusException &&
-                (it.exceptionOrNull() as ResponseStatusException).status == HttpStatus.valueOf(statusCode)
+            for (accountResult in accountResults) {
+                assertThat(accountResult.isFailure, equalTo(true))
+                val responseStatusException = accountResult.exceptionOrNull() as ResponseStatusException
+                assertThat(responseStatusException.status, equalTo(HttpStatus.valueOf(statusCode)))
             }
         }
 
-        When("account list is requested") {
-            listAccountsFromDatabase()
-        }
-
-        When("the account with id {string} is requested") { accountId: String ->
-            val account = getAccountFromDatabase(accountId)
-            accountResults.add(account)
-        }
     }
 
     private fun getAccountFromDatabase(accountId: String): Result<Account>{
@@ -71,20 +78,28 @@ class AccountControllerSteps(@Autowired val accountController: AccountController
         }
     }
 
-    private fun listAccountsFromDatabase(): List<Account>{
-        return accountController.listAccounts()
+    private fun listAccountsFromDatabase(): MutableList<Result<Account>>{
+        return accountController.listAccounts().map { Result.success(it) }.toMutableList()
     }
 
-    private fun getAccountsFromDataTable(table: DataTable): MutableList<Account>{
+    private fun getAccountsFromDataTable(table: DataTable): MutableList<Result<Account>>{
         return table.asMaps().map {
-            mapper.convertValue(it, Account::class.java)
+            try{
+                Result.success(
+                    mapper.convertValue(it, Account::class.java)
+                )
+            }catch(t: Throwable){
+                Result.failure(t)
+            }
         }.toMutableList()
     }
 
     private fun addAccountsFromDataTable(table: DataTable): MutableList<Result<Account>> {
-        return getAccountsFromDataTable(table).map {
+
+        val accountResults = getAccountsFromDataTable(table)
+        return accountResults.map {
             try {
-                val account = accountController.createAccount(it)
+                val account = accountController.createAccount(it.getOrThrow())
                 Result.success(account)
             }catch (t: Throwable){
                 Result.failure(t)

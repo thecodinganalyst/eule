@@ -26,7 +26,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.6.1")
     implementation("org.springframework.boot:spring-boot-starter-data-rest:2.6.1")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.h2database:h2:2.0.202")
@@ -37,7 +37,7 @@ dependencies {
     }
     testImplementation("io.cucumber:cucumber-java8:7.1.0")
     testImplementation("io.cucumber:cucumber-junit:7.1.0")
-    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0")
+    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1")
     testImplementation(group= "io.cucumber", name="cucumber-spring", version="6.10.4")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
@@ -62,7 +62,7 @@ val cucumberRuntime: Configuration by configurations.creating {
 
 task("cucumber") {
     group = "verification"
-    dependsOn("assemble", "compileTestKotlin")
+    dependsOn("assemble", "testClasses")
     doLast {
         javaexec {
             mainClass.set("io.cucumber.core.cli.Main")
@@ -85,7 +85,6 @@ tasks.jacocoTestReport {
     // Give jacoco the file generated with the cucumber tests for the coverage.
     executionData(files("$buildDir/jacoco/test.exec", "$buildDir/results/jacoco/cucumber.exec"))
     reports {
-        xml.required.set(true)
         html.required.set(true)
     }
 }
