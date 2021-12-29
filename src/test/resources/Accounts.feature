@@ -1,36 +1,31 @@
-Feature: Account
-  Scenario: Normal behavior
-    When the following accounts are added
+Feature: Account Management
+  Scenario: Adding an account
+    When "/accounts" is called with "POST" with the following data
       | id    | name  | group   | currency | openBal | openDate   |
       | cash  | Cash  | Assets  | SGD      | 100.00  | 2021-01-01 |
-    Then the following accounts are returned
+    Then HttpStatus 201 is expected
+    And the following data is returned
       | id    | name  | group   | currency | openBal | openDate   |
       | cash  | Cash  | Assets  | SGD      | 100.00  | 2021-01-01 |
 
-  Scenario: Account already exists
-    Given the following accounts already exist
-      | id    | name  | group   | currency | openBal | openDate   |
-      | cash  | Cash  | Assets  | SGD      | 100.00  | 2021-01-01 |
-    When the following accounts are added
+  Scenario: Adding an account which already exists
+    When "/accounts" is called with "POST" with the following data
       | id    | name  | group   | currency | openBal | openDate   |
       | cash  | Cash  | Assets  | SGD      | 100.00  | 2021-01-01 |
     Then HttpStatus 409 is expected
 
-  Scenario: Account exists
-    Given the following accounts already exist
-      | id    | name  | group   | currency | openBal | openDate   |
-      | cash  | Cash  | Assets  | SGD      | 100.00  | 2021-01-01 |
-    When the account with id "cash" is requested
-    Then the following accounts are returned
+  Scenario: Getting an existing account
+    When "/accounts" is called with "GET" with the params "/cash"
+    Then the following data is returned
       | id    | name  | group   | currency | openBal | openDate   |
       | cash  | Cash  | Assets  | SGD      | 100.00  | 2021-01-01 |
 
-  Scenario: Account doesn't exists
-    When the account with id "credit card" is requested
+  Scenario: Getting a non-existent account
+    When "/accounts" is called with "GET" with the params "/CREDIT-CARD"
     Then HttpStatus 404 is expected
 
-  Scenario: Normal behavior
-    When account list is requested
-    Then the following accounts are returned
+  Scenario: List accounts
+    When "/accounts" is called with "GET"
+    Then the following data list is returned
       | id    | name  | group   | currency | openBal | openDate   |
       | cash  | Cash  | Assets  | SGD      | 100.00  | 2021-01-01 |

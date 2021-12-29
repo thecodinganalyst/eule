@@ -11,11 +11,13 @@ import org.springframework.web.server.ResponseStatusException
 class AccountController(val accountService: AccountService) {
 
     @GetMapping
+    @ResponseBody
     fun listAccounts(): List<Account>{
         return accountService.listAccounts()
     }
 
     @GetMapping(value = ["/{accountId}"])
+    @ResponseBody
     fun getAccount(@PathVariable accountId: String): Account{
         return try{
             accountService.getAccount(accountId)

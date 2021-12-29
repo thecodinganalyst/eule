@@ -31,7 +31,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.h2database:h2:2.0.202")
 //    runtimeOnly("org.springframework.boot:spring-boot-devtools:2.6.1")
-    testImplementation("com.ninja-squad:springmockk:3.0.1")
+    testImplementation("com.ninja-squad:springmockk:3.1.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.1") {
         exclude(module = "mockito-core")
     }
