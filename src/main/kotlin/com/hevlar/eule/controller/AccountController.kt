@@ -49,9 +49,9 @@ class AccountController(val accountService: AccountService) {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = ["/{accountId}"])
     @ResponseStatus(HttpStatus.OK)
-    fun deleteAccount(@RequestBody accountId: String): Boolean{
+    fun deleteAccount(@PathVariable accountId: String): Boolean{
         return if (accountService.existAccount(accountId)){
             accountService.deleteAccount(accountId)
             true

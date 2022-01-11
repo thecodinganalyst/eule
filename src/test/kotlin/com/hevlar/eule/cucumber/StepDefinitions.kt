@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 class StepDefinitions: En {
@@ -70,6 +72,8 @@ class StepDefinitions: En {
         return when(method){
             "GET" -> get(route)
             "POST" -> post(route)
+            "PUT" -> put(route)
+            "DELETE" -> delete(route)
             else -> throw IllegalArgumentException()
         }
     }
