@@ -22,6 +22,22 @@ class StepDefinitions: En {
     private var mapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
 
     init {
+
+        Given("the following {string} exists") { dataTypeName: String, dataTable: DataTable ->
+            val jsonList = dataTable.asMaps().map { mapper.writeValueAsString(it) }
+            val route = when(dataTypeName){
+                "Account" -> "/accounts"
+                else -> throw IllegalArgumentException("$dataTypeName not recognized")
+            }
+            jsonList.map {
+                context.perform(
+                    callApi("POST", route)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(it)
+                )
+            }
+        }
+
         When("{string} is called with {string} with the following data") { route: String, method: String, dataTable: DataTable ->
             val json = dataTable.asMaps().first().let { mapper.writeValueAsString(it) }
             context.perform(
@@ -44,12 +60,14 @@ class StepDefinitions: En {
         }
 
         Then("the following data is returned") { dataTable: DataTable ->
-            val data = dataTable.asMaps().first()
+            val data = dataTable.asMaps().first().conditionMap()
             context
                 .andExpect(
                     content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
-                ).andExpect(
-                    jsonPath("$.id").value(data["id"])
+                ).andExpectAll(
+                    *data.keys.map {
+                        jsonPath("$.$it").value(data[it])
+                    }.toTypedArray()
                 )
         }
 
@@ -58,14 +76,24 @@ class StepDefinitions: En {
         }
 
         Then("the following data list is returned") { dataTable: DataTable ->
-            val dataList = dataTable.asMaps()
+            val dataList = dataTable.asMaps().map { it.conditionMap() }
             context.andExpectAll(
                 content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
                 jsonPath("$").isArray,
-                jsonPath("$.length()").value(dataList.size)
+                jsonPath("$.length()").value(dataList.size),
+                *dataList.flatMapIndexed{ i, map ->
+                    map.keys.map {
+                        jsonPath("$[$i].$it").value(map[it])
+                    }
+                }.toTypedArray()
             )
         }
+    }
 
+    private fun Map<String, String?>.conditionMap(): Map<String, Any?>{
+        return this.mapValues {
+            it.value?.toDoubleOrNull() ?: it.value
+        }
     }
 
     private fun callApi(method: String, route: String): MockHttpServletRequestBuilder {

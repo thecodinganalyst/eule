@@ -1,5 +1,5 @@
 Feature: Account Management
-  Scenario: Adding an account
+  Scenario: Adding an asset account
     When "/accounts" is called with "POST" with the following data
       | id    | name  | group   | currency | openBal | openDate   |
       | cash  | Cash  | Assets  | SGD      | 100.00  | 2021-01-01 |
@@ -7,6 +7,15 @@ Feature: Account Management
     And the following data is returned
       | id    | name  | group   | currency | openBal | openDate   |
       | cash  | Cash  | Assets  | SGD      | 100.00  | 2021-01-01 |
+
+  Scenario: Adding an expense account
+    When "/accounts" is called with "POST" with the following data
+      | id    | name  | group    | currency | openBal | openDate   |
+      | food  | Food  | Expenses |          |         |            |
+    Then HttpStatus 201 is expected
+    And the following data is returned
+      | id    | name  | group    | currency | openBal | openDate   |
+      | food  | Food  | Expenses |          |         |            |
 
   Scenario: Adding an account which already exists
     When "/accounts" is called with "POST" with the following data
@@ -17,7 +26,7 @@ Feature: Account Management
   Scenario: Adding an account with invalid data
     When "/accounts" is called with "POST" with the following data
       | id    | name  | group   | currency | openBal | openDate   |
-      | cash  | Cash  | Empty   | SGD      | 100.00  | 2021-01-01 |
+      | bank  | Bank  | Empty   | SGD      | 100.00  | 2021-01-01 |
     Then HttpStatus 400 is expected
 
   Scenario: Getting an existing account
@@ -41,7 +50,7 @@ Feature: Account Management
 
   Scenario: Update non existent account
     When "/accounts" is called with "PUT" with the following data
-      | id      | name  | group   | currency | openBal | openDate   |
+      | id      | name    | group   | currency | openBal | openDate   |
       | credit  | Credit  | Assets  | SGD      | 200.00  | 2021-01-01 |
     Then HttpStatus 404 is expected
 
@@ -54,8 +63,9 @@ Feature: Account Management
   Scenario: List accounts
     When "/accounts" is called with "GET"
     Then the following data list is returned
-      | id    | name  | group   | currency | openBal | openDate   |
-      | cash  | Cash  | Assets  | SGD      | 200.00  | 2021-01-01 |
+      | id    | name  | group    | currency | openBal | openDate   |
+      | cash  | Cash  | Assets   | SGD      | 200.00  | 2021-01-01 |
+      | food  | Food  | Expenses |          |         |            |
 
   Scenario: Deleting an existing account
     When "/accounts" is called with "DELETE" with the params "/cash"
@@ -64,7 +74,8 @@ Feature: Account Management
   Scenario: List accounts after deleting
     When "/accounts" is called with "GET"
     Then the following data list is returned
-      | id    | name  | group   | currency | openBal | openDate   |
+      | id    | name  | group    | currency | openBal | openDate   |
+      | food  | Food  | Expenses |          |         |            |
 
   Scenario: Deleting a non-existent account
     When "/accounts" is called with "DELETE" with the params "/credit"
