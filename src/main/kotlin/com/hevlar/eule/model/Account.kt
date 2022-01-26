@@ -30,8 +30,3 @@ open class Account(
     @Column(name = "OPEN_DATE")
     open var openDate: LocalDate?
 )
-{
-    constructor(id: String, name: String, group: String, curr: String?, openBal: String?, openDate: String?) : this(
-        id, name, AccountGroup.valueOf(group), Currency.getInstance(curr), BigDecimal(openBal), LocalDate.parse(openDate)
-    )
-}

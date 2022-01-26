@@ -37,9 +37,3 @@ open class JournalEntry(
     @Column(name = "RECUR")
     open var recurrence: Recurrence?,
 )
-{
-//    constructor(txDate: String, description: String, currency: String, amount: String, debitAccount: String, creditAccount: String, postDate: String, recurrence: String): this(
-//        LocalDate.parse(txDate), description, Currency.getInstance(currency), BigDecimal(amount), debitAccount, creditAccount, LocalDate.parse(postDate), Recurrence.valueOf(recurrence)
-//    )
-
-}
