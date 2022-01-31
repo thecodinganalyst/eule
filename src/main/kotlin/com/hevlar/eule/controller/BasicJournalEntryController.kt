@@ -1,7 +1,7 @@
 package com.hevlar.eule.controller
 
-import com.hevlar.eule.model.JournalEntry
-import com.hevlar.eule.service.JournalEntryService
+import com.hevlar.eule.model.BasicJournalEntry
+import com.hevlar.eule.service.BasicJournalEntryService
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -9,19 +9,19 @@ import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("journalEntry")
-class JournalEntryController(val journalEntryService: JournalEntryService) {
+class BasicJournalEntryController(val journalEntryService: BasicJournalEntryService) {
 
     val logger = LoggerFactory.getLogger(this.javaClass)
 
     @GetMapping
     @ResponseBody
-    fun listJournalEntries(): List<JournalEntry>{
+    fun listJournalEntries(): List<BasicJournalEntry>{
         return journalEntryService.listJournalEntries()
     }
 
     @GetMapping(value = ["/{jeId}"])
     @ResponseBody
-    fun getJournalEntry(@PathVariable jeId: Long): JournalEntry {
+    fun getJournalEntry(@PathVariable jeId: Long): BasicJournalEntry {
         return try{
             journalEntryService.getJournalEntry(jeId)
         }catch (e: Exception){
@@ -32,7 +32,7 @@ class JournalEntryController(val journalEntryService: JournalEntryService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createAccount(@RequestBody journalEntry: JournalEntry): JournalEntry {
+    fun createAccount(@RequestBody journalEntry: BasicJournalEntry): BasicJournalEntry {
         if(journalEntryService.existJournalEntry(journalEntry.id)){
             logger.error("Journal Entry - ${journalEntry.id} already exists")
             throw ResponseStatusException(HttpStatus.CONFLICT, "Journal Entry - ${journalEntry.id} already exists")
@@ -49,7 +49,7 @@ class JournalEntryController(val journalEntryService: JournalEntryService) {
     }
 
     @PutMapping
-    fun updateAccount(@RequestBody journalEntry: JournalEntry): JournalEntry? {
+    fun updateAccount(@RequestBody journalEntry: BasicJournalEntry): BasicJournalEntry? {
         return if (journalEntryService.existJournalEntry(journalEntry.id)){
             journalEntryService.saveJournalEntry(journalEntry)
         }else{

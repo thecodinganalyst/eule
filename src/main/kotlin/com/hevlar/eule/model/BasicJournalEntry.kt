@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "JOURNAL")
-open class JournalEntry(
+open class BasicJournalEntry(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "JE_ID")

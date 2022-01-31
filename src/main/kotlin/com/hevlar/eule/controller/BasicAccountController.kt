@@ -1,24 +1,24 @@
 package com.hevlar.eule.controller
 
-import com.hevlar.eule.model.Account
-import com.hevlar.eule.service.AccountService
+import com.hevlar.eule.model.BasicAccount
+import com.hevlar.eule.service.BasicAccountService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("accounts")
-class AccountController(val accountService: AccountService) {
+class BasicAccountController(val accountService: BasicAccountService) {
 
     @GetMapping
     @ResponseBody
-    fun listAccounts(): List<Account>{
+    fun listAccounts(): List<BasicAccount>{
         return accountService.listAccounts()
     }
 
     @GetMapping(value = ["/{accountId}"])
     @ResponseBody
-    fun getAccount(@PathVariable accountId: String): Account{
+    fun getAccount(@PathVariable accountId: String): BasicAccount{
         return try{
             accountService.getAccount(accountId)
         }catch (e: Exception){
@@ -28,7 +28,7 @@ class AccountController(val accountService: AccountService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createAccount(@RequestBody account: Account): Account {
+    fun createAccount(@RequestBody account: BasicAccount): BasicAccount {
         if(accountService.existAccount(account.id))
             throw ResponseStatusException(HttpStatus.CONFLICT, "Account - ${account.id} already exists")
 
@@ -41,7 +41,7 @@ class AccountController(val accountService: AccountService) {
     }
 
     @PutMapping
-    fun updateAccount(@RequestBody account: Account): Account? {
+    fun updateAccount(@RequestBody account: BasicAccount): BasicAccount? {
         return if (accountService.existAccount(account.id)){
             accountService.saveAccount(account)
         }else{

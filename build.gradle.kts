@@ -31,7 +31,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.h2database:h2:2.1.210")
-    implementation("ch.qos.logback:logback-core:1.2.9")
+    implementation("ch.qos.logback:logback-core:1.2.10")
     implementation("org.slf4j:slf4j-api:1.7.33")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 //    runtimeOnly("org.springframework.boot:spring-boot-devtools:2.6.1")

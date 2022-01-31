@@ -10,7 +10,7 @@ import javax.persistence.*
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "account_type", discriminatorType = DiscriminatorType.STRING)
 @DiscriminatorValue("null")
-open class Account(
+open class BasicAccount(
     @Id
     @Column(name = "ACC_ID")
     open val id: String,

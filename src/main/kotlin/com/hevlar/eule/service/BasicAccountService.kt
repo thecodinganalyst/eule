@@ -1,13 +1,13 @@
 package com.hevlar.eule.service
 
-import com.hevlar.eule.model.Account
+import com.hevlar.eule.model.BasicAccount
 import com.hevlar.eule.repository.AccountRepository
 import org.springframework.stereotype.Service
 
 @Service
-class AccountService (val accountRepository: AccountRepository) {
+class BasicAccountService (val accountRepository: AccountRepository) {
 
-    fun saveAccount(account: Account): Account{
+    fun saveAccount(account: BasicAccount): BasicAccount{
         return accountRepository.save(account)
     }
 
@@ -15,11 +15,11 @@ class AccountService (val accountRepository: AccountRepository) {
         return accountRepository.deleteById(accountId)
     }
 
-    fun getAccount(accountId: String): Account{
+    fun getAccount(accountId: String): BasicAccount{
         return accountRepository.findById(accountId).orElseThrow()
     }
 
-    fun listAccounts(): List<Account>{
+    fun listAccounts(): List<BasicAccount>{
         return accountRepository.findAll()
     }
 

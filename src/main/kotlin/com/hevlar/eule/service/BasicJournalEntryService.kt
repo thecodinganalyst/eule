@@ -1,14 +1,13 @@
 package com.hevlar.eule.service
 
-import com.hevlar.eule.model.Account
-import com.hevlar.eule.model.JournalEntry
+import com.hevlar.eule.model.BasicJournalEntry
 import com.hevlar.eule.repository.JournalEntryRepository
 import org.springframework.stereotype.Service
 
 @Service
-class JournalEntryService (val journalEntryRepository: JournalEntryRepository){
+class BasicJournalEntryService (val journalEntryRepository: JournalEntryRepository){
 
-    fun saveJournalEntry(journalEntry: JournalEntry): JournalEntry {
+    fun saveJournalEntry(journalEntry: BasicJournalEntry): BasicJournalEntry {
         return journalEntryRepository.save(journalEntry)
     }
 
@@ -16,11 +15,11 @@ class JournalEntryService (val journalEntryRepository: JournalEntryRepository){
         return journalEntryRepository.deleteById(jeId)
     }
 
-    fun getJournalEntry(jeId: Long): JournalEntry {
+    fun getJournalEntry(jeId: Long): BasicJournalEntry {
         return journalEntryRepository.findById(jeId).orElseThrow()
     }
 
-    fun listJournalEntries(): List<JournalEntry>{
+    fun listJournalEntries(): List<BasicJournalEntry>{
         return journalEntryRepository.findAll()
     }
 

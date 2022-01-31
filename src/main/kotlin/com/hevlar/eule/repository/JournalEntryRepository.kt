@@ -1,11 +1,11 @@
 package com.hevlar.eule.repository
 
-import com.hevlar.eule.model.JournalEntry
+import com.hevlar.eule.model.BasicJournalEntry
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
 @Transactional
-interface JournalEntryRepository: JpaRepository<JournalEntry, Long> {
+interface JournalEntryRepository: JpaRepository<BasicJournalEntry, Long> {
 }
