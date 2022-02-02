@@ -1,6 +1,5 @@
 package com.hevlar.eule.service
 
-import com.hevlar.accounting.domain.model.journal.JournalEntry
 import com.hevlar.accounting.implementation.GenericGeneralLedger
 import com.hevlar.accounting.implementation.repository.GenericEntryRepository
 import com.hevlar.eule.model.PersonalEntry
