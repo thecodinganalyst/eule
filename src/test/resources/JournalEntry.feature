@@ -55,16 +55,3 @@ Feature: Journal Entry Management
     Then the following data list is returned
       | id | txDate     | description | currency | amount | debitAccountId | creditAccountId | postDate   | recurrence |
       | 1  | 2021-01-10 | Lunch       | SGD      | 7.00   | food           | cash            | 2021-01-10 |            |
-
-  Scenario: Deleting an existing journal entry
-    When "/journalEntry" is called with "DELETE" with the params "/1"
-    Then HttpStatus 200 is expected
-
-  Scenario: List journal entries after deleting
-    When "/journalEntry" is called with "GET"
-    Then the following data list is returned
-      | id | txDate     | description | currency | amount | debitAccountId | creditAccountId | postDate   | recurrence |
-
-  Scenario: Deleting a non-existent journal entry
-    When "/journalEntry" is called with "DELETE" with the params "/99"
-    Then HttpStatus 404 is expected

@@ -1,4 +1,4 @@
-package com.hevlar.eule.model
+package com.hevlar.accounting.domain.model.account
 
 enum class AccountGroup(val entryType: EntryType) {
     Assets(EntryType.Debit),
