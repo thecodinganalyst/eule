@@ -6,15 +6,15 @@ import com.hevlar.accounting.domain.service.GeneralLedger
 import org.springframework.data.repository.findByIdOrNull
 import java.util.NoSuchElementException
 
-open class GenericGeneralLedger<A :Any, J :Any, T : JournalEntry<J, A>>(
-    private val repository: GenericEntryRepository<J, A, T>
-) :GeneralLedger<A, J, T> {
+open class GenericGeneralLedger<A :Any, J :Any, JOURNAL : JournalEntry<J, A>>(
+    private val repository: GenericEntryRepository<J, A, JOURNAL>
+) :GeneralLedger<A, J, JOURNAL> {
 
-    override fun get(journalId: J): T? {
+    override fun get(journalId: J): JOURNAL? {
         return repository.findByIdOrNull(journalId)
     }
 
-    override fun list(): Collection<T> {
+    override fun list(): Collection<JOURNAL> {
         return repository.findAll()
     }
 
@@ -22,7 +22,7 @@ open class GenericGeneralLedger<A :Any, J :Any, T : JournalEntry<J, A>>(
         return repository.existsById(journalId)
     }
 
-    override fun add(journalEntry: T): T {
+    override fun add(journalEntry: JOURNAL): JOURNAL {
         return repository.save(journalEntry)
     }
 
@@ -30,7 +30,7 @@ open class GenericGeneralLedger<A :Any, J :Any, T : JournalEntry<J, A>>(
         return repository.existsByDebitAccountId(accountId) || repository.existsByCreditAccountId(accountId)
     }
 
-    override fun edit(journalEntry: T): T {
+    override fun edit(journalEntry: JOURNAL): JOURNAL {
         if (!exists(journalEntry.id)) throw NoSuchElementException("Journal Entry with id ${journalEntry.id} does not exist")
         return repository.save(journalEntry)
     }

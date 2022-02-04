@@ -5,10 +5,10 @@ import java.io.Serializable
 import java.math.BigDecimal
 import java.time.Period
 
-interface IncomeStatement<A: Serializable> {
+interface IncomeStatement<A: Any, ACCOUNT: Account<A>> {
     val period: Period
-    val revenue: Map<Account<A>, BigDecimal>
-    val expenses: Map<Account<A>, BigDecimal>
+    val revenue: Map<ACCOUNT, BigDecimal>
+    val expenses: Map<ACCOUNT, BigDecimal>
 
     fun totalRevenue() = revenue.values.reduce { acc, amount -> acc + amount }
     fun totalExpenses() = expenses.values.reduce { acc, amount -> acc + amount }

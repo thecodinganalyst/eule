@@ -2,17 +2,17 @@ package com.hevlar.accounting.domain.service
 
 import com.hevlar.accounting.domain.model.account.Account
 
-interface ChartOfAccounts<A: Any, T: Account<A>> {
+interface ChartOfAccounts<A: Any, ACCOUNT: Account<A>> {
 
     fun exists(accountId: A): Boolean
 
-    fun list(): Collection<T>
+    fun list(): Collection<ACCOUNT>
 
-    fun get(id: A): T?
+    fun get(id: A): ACCOUNT?
 
-    fun add(account: T): T
+    fun add(account: ACCOUNT): ACCOUNT
 
-    fun update(account: T): T
+    fun update(account: ACCOUNT): ACCOUNT
 
     fun delete(accountId: A)
 

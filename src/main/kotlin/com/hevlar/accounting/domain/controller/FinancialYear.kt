@@ -11,15 +11,15 @@ import java.time.LocalDate
 import java.time.Period
 import java.util.*
 
-interface FinancialYear<A: Serializable, J: Serializable, T: Account<A>, U: JournalEntry<J, A>> {
+interface FinancialYear<A: Serializable, J: Serializable, ACCOUNT: Account<A>, JOURNAL: JournalEntry<J, A>> {
 
     val name: String
     val period: Period
-    val chartOfAccounts: ChartOfAccounts<A, T>
-    val generalLedger: GeneralLedger<A, J, U>
+    val chartOfAccounts: ChartOfAccounts<A, ACCOUNT>
+    val generalLedger: GeneralLedger<A, J, JOURNAL>
 
-    fun generateBalanceSheet(balanceDate: LocalDate, currency: Currency): BalanceSheet<A>
+    fun generateBalanceSheet(balanceDate: LocalDate, currency: Currency): BalanceSheet<A, ACCOUNT>
 
-    fun generateIncomeStatement(period: Period, currency: Currency): IncomeStatement<A>
+    fun generateIncomeStatement(period: Period, currency: Currency): IncomeStatement<A, ACCOUNT>
 
 }
