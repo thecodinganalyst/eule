@@ -1,6 +1,7 @@
 package com.hevlar.eule.controller
 
 import com.hevlar.accounting.domain.service.GeneralLedger
+import com.hevlar.eule.model.PersonalAccount
 import com.hevlar.eule.model.PersonalEntry
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -10,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("journalEntry")
-class JournalEntryController(val service: GeneralLedger<String, Long, PersonalEntry>) {
+class JournalEntryController(val service: GeneralLedger<String, Long, PersonalAccount ,PersonalEntry>) {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 

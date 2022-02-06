@@ -1,8 +1,13 @@
 package com.hevlar.accounting.domain.service
 
+import com.hevlar.accounting.domain.model.account.Account
+import com.hevlar.accounting.domain.model.account.EntryType
 import com.hevlar.accounting.domain.model.journal.JournalEntry
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.util.*
 
-interface GeneralLedger<A: Any, J: Any, JOURNAL: JournalEntry<J, A>> {
+interface GeneralLedger<A: Any, J: Any, ACCOUNT: Account<A>, JOURNAL: JournalEntry<J, A>> {
 
     fun get(journalId: J): JOURNAL?
 
@@ -16,4 +21,11 @@ interface GeneralLedger<A: Any, J: Any, JOURNAL: JournalEntry<J, A>> {
 
     fun edit(journalEntry: JOURNAL): JOURNAL
 
+    fun getBalanceForAccount(account: ACCOUNT, currency: Currency, untilDate: LocalDate): BigDecimal
+
+    fun getBalanceForAccount(account: ACCOUNT, currency: Currency, fromDate: LocalDate, toDate: LocalDate): BigDecimal
+
+    fun getTotalAmountForAccountByEntryAndCurrencyUntilDate(accountId: A , entryType: EntryType, currency: Currency, untilDate: LocalDate): BigDecimal
+
+    fun getTotalAmountForAccountByEntryAndCurrencyBetweenDates(accountId: A , entryType: EntryType, currency: Currency, fromDate: LocalDate, toDate: LocalDate): BigDecimal
 }

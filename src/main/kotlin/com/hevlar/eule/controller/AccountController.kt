@@ -24,9 +24,8 @@ class AccountController(val service: ChartOfAccounts<String, PersonalAccount>) {
 
     @GetMapping(value = ["/{accountId}"])
     @ResponseBody
-    fun getAccount(@PathVariable accountId: String): PersonalAccount?{
-        val result = service.get(accountId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        return result
+    fun getAccount(@PathVariable accountId: String): PersonalAccount? {
+        return service.get(accountId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
     }
 
     @PostMapping

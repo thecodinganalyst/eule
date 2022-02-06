@@ -1,18 +1,19 @@
-package com.hevlar.accounting.implementation
+package com.hevlar.accounting.implementation.service
 
 import com.hevlar.accounting.domain.model.account.Account
 import com.hevlar.accounting.domain.exception.AccountAlreadyInUseException
 import com.hevlar.accounting.domain.exception.AccountExistException
+import com.hevlar.accounting.domain.model.account.AccountGroup
 import com.hevlar.accounting.domain.model.journal.JournalEntry
 import com.hevlar.accounting.domain.service.ChartOfAccounts
 import com.hevlar.accounting.domain.service.GeneralLedger
 import com.hevlar.accounting.implementation.repository.GenericAccountRepository
 import org.springframework.data.repository.findByIdOrNull
-import java.util.NoSuchElementException
+import java.util.*
 
 open class GenericChartOfAccounts<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL: JournalEntry<J, A>> (
     private val repository: GenericAccountRepository<A, ACCOUNT>,
-    private val generalLedger: GeneralLedger<A, J, JOURNAL>
+    private val generalLedger: GeneralLedger<A, J, ACCOUNT, JOURNAL>
 ) : ChartOfAccounts<A, ACCOUNT> {
 
     override fun exists(accountId: A): Boolean {
@@ -42,5 +43,21 @@ open class GenericChartOfAccounts<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL: 
         if (!exists(accountId)) throw NoSuchElementException("Account with id $accountId does not exists")
         if (generalLedger.journalExistsForAccount(accountId)) throw AccountAlreadyInUseException(accountId.toString())
         repository.deleteById(accountId)
+    }
+
+    override fun getAccountsByGroup(accountGroup: AccountGroup): Collection<ACCOUNT> {
+        return repository.findByGroupIn(listOf(accountGroup))
+    }
+
+    override fun getAccountsByGroupAndCurrency(accountGroup: AccountGroup, currency: Currency): Collection<ACCOUNT> {
+        return repository.findByCurrencyAndGroupIn(currency, listOf(accountGroup))
+    }
+
+    override fun getBalanceSheetAccounts(): Collection<ACCOUNT> {
+        return repository.findByGroupIn(listOf(AccountGroup.Assets, AccountGroup.Liabilities))
+    }
+
+    override fun getIncomeStatementAccounts(): Collection<ACCOUNT> {
+        return repository.findByGroupIn(listOf(AccountGroup.Revenue, AccountGroup.Expenses, AccountGroup.Gains, AccountGroup.Loss))
     }
 }

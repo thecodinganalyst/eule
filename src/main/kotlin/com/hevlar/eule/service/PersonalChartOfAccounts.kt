@@ -1,6 +1,6 @@
 package com.hevlar.eule.service
 
-import com.hevlar.accounting.implementation.GenericChartOfAccounts
+import com.hevlar.accounting.implementation.service.GenericChartOfAccounts
 import com.hevlar.accounting.implementation.repository.GenericAccountRepository
 import com.hevlar.eule.model.PersonalAccount
 import com.hevlar.eule.model.PersonalEntry
