@@ -19,17 +19,20 @@ open class GenericIncomeStatementBuilder<A: Any, J: Any, ACCOUNT: Account<A>, JO
 
     protected lateinit var incomeStatement: GenericIncomeStatement<A, ACCOUNT>
 
-    override fun reset() {
+    override fun reset(): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL> {
         incomeStatement = GenericIncomeStatement()
+        return this
     }
 
-    override fun setPeriod(fromDate: LocalDate, toDate: LocalDate) {
+    override fun setPeriod(fromDate: LocalDate, toDate: LocalDate): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL> {
         incomeStatement.fromDate = fromDate
         incomeStatement.toDate = toDate
+        return this
     }
 
-    override fun setCurrency(currency: Currency) {
+    override fun setCurrency(currency: Currency): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL> {
         incomeStatement.currency = currency
+        return this
     }
 
     override fun build(): IncomeStatement<A, ACCOUNT> {

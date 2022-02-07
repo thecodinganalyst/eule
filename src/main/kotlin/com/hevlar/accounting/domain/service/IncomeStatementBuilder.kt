@@ -8,11 +8,11 @@ import java.util.*
 
 interface IncomeStatementBuilder<A: Any, J: Any, ACCOUNT: Account<A>, JOURNAL: JournalEntry<J, A>> {
 
-    fun reset()
+    fun reset(): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL>
 
-    fun setPeriod(fromDate: LocalDate, toDate: LocalDate)
+    fun setPeriod(fromDate: LocalDate, toDate: LocalDate): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL>
 
-    fun setCurrency(currency: Currency)
+    fun setCurrency(currency: Currency): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL>
 
     fun build(): IncomeStatement<A, ACCOUNT>
 

@@ -7,11 +7,11 @@ import java.util.*
 
 interface BalanceSheetBuilder<A: Any, ACCOUNT: Account<A>> {
 
-    fun reset()
+    fun reset(): BalanceSheetBuilder<A, ACCOUNT>
 
-    fun setBalanceDate(date: LocalDate)
+    fun setBalanceDate(date: LocalDate): BalanceSheetBuilder<A, ACCOUNT>
 
-    fun setCurrency(currency: Currency)
+    fun setCurrency(currency: Currency): BalanceSheetBuilder<A, ACCOUNT>
 
     fun build(): BalanceSheet<A, ACCOUNT>
 

@@ -30,6 +30,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.hamcrest:hamcrest-all:1.3")
     runtimeOnly("com.h2database:h2:2.1.210")
     implementation("ch.qos.logback:logback-core:1.2.10")
     implementation("org.slf4j:slf4j-api:1.7.33")

@@ -9,6 +9,8 @@ import java.util.*
 
 interface GeneralLedger<A: Any, J: Any, ACCOUNT: Account<A>, JOURNAL: JournalEntry<J, A>> {
 
+    fun validate(journal: JOURNAL)
+
     fun get(journalId: J): JOURNAL?
 
     fun list(): Collection<JOURNAL>

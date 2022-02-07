@@ -1,8 +1,7 @@
 package com.hevlar.accounting.implementation.service
 
+import com.hevlar.accounting.domain.exception.*
 import com.hevlar.accounting.domain.model.account.Account
-import com.hevlar.accounting.domain.exception.AccountAlreadyInUseException
-import com.hevlar.accounting.domain.exception.AccountExistException
 import com.hevlar.accounting.domain.model.account.AccountGroup
 import com.hevlar.accounting.domain.model.journal.JournalEntry
 import com.hevlar.accounting.domain.service.ChartOfAccounts
@@ -15,6 +14,16 @@ open class GenericChartOfAccounts<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL: 
     private val repository: GenericAccountRepository<A, ACCOUNT>,
     private val generalLedger: GeneralLedger<A, J, ACCOUNT, JOURNAL>
 ) : ChartOfAccounts<A, ACCOUNT> {
+
+    override fun validate(account: ACCOUNT) {
+        val collector = GroupAccountingException()
+        if (account.group == AccountGroup.Assets || account.group == AccountGroup.Liabilities){
+            if (account.openDate == null) collector.add(BalanceSheetAccountOpenDateMissing())
+            if (account.openBal == null) collector.add(BalanceSheetAccountOpenBalMissing())
+            if (account.currency == null) collector.add(BalanceSheetAccountCurrencyMissing())
+        }
+        collector.throwIfNotEmpty()
+    }
 
     override fun exists(accountId: A): Boolean {
         return repository.existsById(accountId)
@@ -29,19 +38,24 @@ open class GenericChartOfAccounts<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL: 
     }
 
     override fun add(account: ACCOUNT): ACCOUNT {
+        validate(account)
         if (exists(account.id)) throw AccountExistException(account.id.toString())
+
         return repository.save(account)
     }
 
     override fun update(account: ACCOUNT): ACCOUNT {
+        validate(account)
         if (!exists(account.id)) throw NoSuchElementException("Account with id ${account.id} does not exists")
         if (generalLedger.journalExistsForAccount(account.id)) throw AccountAlreadyInUseException(account.id.toString())
+
         return repository.save(account)
     }
 
     override fun delete(accountId: A) {
         if (!exists(accountId)) throw NoSuchElementException("Account with id $accountId does not exists")
         if (generalLedger.journalExistsForAccount(accountId)) throw AccountAlreadyInUseException(accountId.toString())
+
         repository.deleteById(accountId)
     }
 

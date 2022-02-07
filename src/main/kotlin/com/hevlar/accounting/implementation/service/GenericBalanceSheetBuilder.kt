@@ -19,16 +19,19 @@ open class GenericBalanceSheetBuilder<A :Any, J :Any, ACCOUNT: Account<A>, JOURN
 
     protected lateinit var balanceSheet: GenericBalanceSheet<A, ACCOUNT>
 
-    override fun reset() {
+    override fun reset(): BalanceSheetBuilder<A, ACCOUNT> {
         balanceSheet = GenericBalanceSheet()
+        return this
     }
 
-    override fun setBalanceDate(date: LocalDate) {
+    override fun setBalanceDate(date: LocalDate): BalanceSheetBuilder<A, ACCOUNT> {
         balanceSheet.balanceDate = date
+        return this
     }
 
-    override fun setCurrency(currency: Currency) {
+    override fun setCurrency(currency: Currency): BalanceSheetBuilder<A, ACCOUNT> {
         balanceSheet.currency = currency
+        return this
     }
 
     override fun build(): BalanceSheet<A, ACCOUNT> {

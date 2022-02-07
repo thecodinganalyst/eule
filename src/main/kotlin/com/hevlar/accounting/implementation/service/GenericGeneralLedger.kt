@@ -1,6 +1,11 @@
 package com.hevlar.accounting.implementation.service
 
+import com.hevlar.accounting.domain.exception.BalanceSheetAccountCurrencyMissing
+import com.hevlar.accounting.domain.exception.BalanceSheetAccountOpenBalMissing
+import com.hevlar.accounting.domain.exception.BalanceSheetAccountOpenDateMissing
+import com.hevlar.accounting.domain.exception.GroupAccountingException
 import com.hevlar.accounting.domain.model.account.Account
+import com.hevlar.accounting.domain.model.account.AccountGroup
 import com.hevlar.accounting.domain.model.account.EntryType
 import com.hevlar.accounting.domain.model.journal.JournalEntry
 import com.hevlar.accounting.implementation.repository.GenericEntryRepository
@@ -13,6 +18,11 @@ import java.util.*
 open class GenericGeneralLedger<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL : JournalEntry<J, A>>(
     private val repository: GenericEntryRepository<J, A, JOURNAL>
 ) :GeneralLedger<A, J, ACCOUNT, JOURNAL> {
+
+    override fun validate(journal: JOURNAL) {
+        val collector = GroupAccountingException()
+        collector.throwIfNotEmpty()
+    }
 
     override fun get(journalId: J): JOURNAL? {
         return repository.findByIdOrNull(journalId)
@@ -27,6 +37,7 @@ open class GenericGeneralLedger<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL : J
     }
 
     override fun add(journalEntry: JOURNAL): JOURNAL {
+        validate(journalEntry)
         return repository.save(journalEntry)
     }
 
@@ -35,6 +46,7 @@ open class GenericGeneralLedger<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL : J
     }
 
     override fun edit(journalEntry: JOURNAL): JOURNAL {
+        validate(journalEntry)
         if (!exists(journalEntry.id)) throw NoSuchElementException("Journal Entry with id ${journalEntry.id} does not exist")
         return repository.save(journalEntry)
     }

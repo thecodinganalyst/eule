@@ -1,10 +1,13 @@
 package com.hevlar.accounting.domain.service
 
+import com.hevlar.accounting.domain.exception.AccountingException
 import com.hevlar.accounting.domain.model.account.Account
 import com.hevlar.accounting.domain.model.account.AccountGroup
 import java.util.*
 
 interface ChartOfAccounts<A: Any, ACCOUNT: Account<A>> {
+
+    fun validate(account: ACCOUNT)
 
     fun exists(accountId: A): Boolean
 
