@@ -1,6 +1,5 @@
 package com.hevlar.eule.service
 
-import com.hevlar.accounting.domain.service.ChartOfAccounts
 import com.hevlar.accounting.implementation.service.GenericBalanceSheetBuilder
 import com.hevlar.eule.model.PersonalAccount
 import com.hevlar.eule.model.PersonalEntry

@@ -1,11 +1,8 @@
 package com.hevlar.accounting.implementation.service
 
-import com.hevlar.accounting.domain.exception.BalanceSheetAccountCurrencyMissing
-import com.hevlar.accounting.domain.exception.BalanceSheetAccountOpenBalMissing
-import com.hevlar.accounting.domain.exception.BalanceSheetAccountOpenDateMissing
-import com.hevlar.accounting.domain.exception.GroupAccountingException
+import com.hevlar.accounting.FinancialYear
+import com.hevlar.accounting.domain.exception.*
 import com.hevlar.accounting.domain.model.account.Account
-import com.hevlar.accounting.domain.model.account.AccountGroup
 import com.hevlar.accounting.domain.model.account.EntryType
 import com.hevlar.accounting.domain.model.journal.JournalEntry
 import com.hevlar.accounting.implementation.repository.GenericEntryRepository
@@ -16,11 +13,14 @@ import java.time.LocalDate
 import java.util.*
 
 open class GenericGeneralLedger<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL : JournalEntry<J, A>>(
-    private val repository: GenericEntryRepository<J, A, JOURNAL>
+    private val repository: GenericEntryRepository<J, A, JOURNAL>,
+    private val financialYear: FinancialYear
 ) :GeneralLedger<A, J, ACCOUNT, JOURNAL> {
 
     override fun validate(journal: JOURNAL) {
         val collector = GroupAccountingException()
+        if (journal.txDate.isBefore(financialYear.startDate)) collector.add(JournalTxDateBeforeFY())
+        if (journal.txDate.isAfter(financialYear.endDate)) collector.add(JournalTxDateAfterFY())
         collector.throwIfNotEmpty()
     }
 

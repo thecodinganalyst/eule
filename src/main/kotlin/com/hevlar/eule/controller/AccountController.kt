@@ -2,7 +2,6 @@ package com.hevlar.eule.controller
 
 import com.hevlar.accounting.domain.exception.AccountAlreadyInUseException
 import com.hevlar.accounting.domain.exception.AccountExistException
-import com.hevlar.accounting.domain.exception.InvalidAccountException
 import com.hevlar.accounting.domain.service.ChartOfAccounts
 import com.hevlar.eule.model.PersonalAccount
 import org.slf4j.Logger

@@ -1,6 +1,5 @@
 package com.hevlar.accounting.domain.service
 
-import com.hevlar.accounting.domain.exception.AccountingException
 import com.hevlar.accounting.domain.model.account.Account
 import com.hevlar.accounting.domain.model.account.AccountGroup
 import java.util.*

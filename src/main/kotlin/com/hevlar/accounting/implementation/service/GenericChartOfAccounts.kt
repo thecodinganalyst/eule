@@ -1,5 +1,6 @@
 package com.hevlar.accounting.implementation.service
 
+import com.hevlar.accounting.FinancialYear
 import com.hevlar.accounting.domain.exception.*
 import com.hevlar.accounting.domain.model.account.Account
 import com.hevlar.accounting.domain.model.account.AccountGroup
@@ -12,7 +13,8 @@ import java.util.*
 
 open class GenericChartOfAccounts<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL: JournalEntry<J, A>> (
     private val repository: GenericAccountRepository<A, ACCOUNT>,
-    private val generalLedger: GeneralLedger<A, J, ACCOUNT, JOURNAL>
+    private val generalLedger: GeneralLedger<A, J, ACCOUNT, JOURNAL>,
+    private val financialYear: FinancialYear
 ) : ChartOfAccounts<A, ACCOUNT> {
 
     override fun validate(account: ACCOUNT) {
@@ -21,7 +23,10 @@ open class GenericChartOfAccounts<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL: 
             if (account.openDate == null) collector.add(BalanceSheetAccountOpenDateMissing())
             if (account.openBal == null) collector.add(BalanceSheetAccountOpenBalMissing())
             if (account.currency == null) collector.add(BalanceSheetAccountCurrencyMissing())
+            if (account.openDate!!.isBefore(financialYear.startDate)) collector.add(BalanceSheetAccountOpenDateBeforeFY())
+            if (account.openDate!!.isAfter(financialYear.endDate)) collector.add(BalanceSheetAccountOpenDateAfterFY())
         }
+
         collector.throwIfNotEmpty()
     }
 

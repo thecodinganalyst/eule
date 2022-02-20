@@ -33,7 +33,7 @@ dependencies {
     implementation("org.hamcrest:hamcrest-all:1.3")
     runtimeOnly("com.h2database:h2:2.1.210")
     implementation("ch.qos.logback:logback-core:1.2.10")
-    implementation("org.slf4j:slf4j-api:1.7.33")
+    implementation("org.slf4j:slf4j-api:1.7.36")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("com.ninja-squad:springmockk:3.1.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.3") {
@@ -45,6 +45,8 @@ dependencies {
     testImplementation(group= "io.cucumber", name="cucumber-spring", version="6.10.4")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
+
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 noArg {

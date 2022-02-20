@@ -17,7 +17,7 @@ open class GenericIncomeStatementBuilder<A: Any, J: Any, ACCOUNT: Account<A>, JO
     open val chartOfAccounts: ChartOfAccounts<A, ACCOUNT>
 ): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL> {
 
-    protected lateinit var incomeStatement: GenericIncomeStatement<A, ACCOUNT>
+    private lateinit var incomeStatement: GenericIncomeStatement<A, ACCOUNT>
 
     override fun reset(): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL> {
         incomeStatement = GenericIncomeStatement()

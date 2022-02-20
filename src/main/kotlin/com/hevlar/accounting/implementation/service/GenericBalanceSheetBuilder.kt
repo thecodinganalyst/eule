@@ -17,7 +17,7 @@ open class GenericBalanceSheetBuilder<A :Any, J :Any, ACCOUNT: Account<A>, JOURN
     open val chartOfAccounts: ChartOfAccounts<A, ACCOUNT>
 ): BalanceSheetBuilder<A, ACCOUNT> {
 
-    protected lateinit var balanceSheet: GenericBalanceSheet<A, ACCOUNT>
+    private lateinit var balanceSheet: GenericBalanceSheet<A, ACCOUNT>
 
     override fun reset(): BalanceSheetBuilder<A, ACCOUNT> {
         balanceSheet = GenericBalanceSheet()
