@@ -32,7 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.hamcrest:hamcrest-all:1.3")
     runtimeOnly("com.h2database:h2:2.1.210")
-    implementation("ch.qos.logback:logback-core:1.2.10")
+    implementation("ch.qos.logback:logback-core:1.2.11")
     implementation("org.slf4j:slf4j-api:1.7.36")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("com.ninja-squad:springmockk:3.1.1")
@@ -41,15 +41,15 @@ dependencies {
     }
     testImplementation("io.cucumber:cucumber-java8:7.2.3")
     testImplementation("io.cucumber:cucumber-junit:7.2.3")
-    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1")
+    testImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2")
     testImplementation(group= "io.cucumber", name="cucumber-spring", version="6.10.4")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:2.6.4")
 
-    implementation("org.springdoc:springdoc-openapi-data-rest:1.6.5")
+    implementation("org.springdoc:springdoc-openapi-data-rest")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.5")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.6")
 }
 
 noArg {
