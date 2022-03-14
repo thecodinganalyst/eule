@@ -17,7 +17,7 @@ open class PersonalAccount(
     override val id: String,
 
     @Column(name = "NAME")
-    var name: String,
+    open var name: String,
 
     @Column(name = "ACC_GRP")
     override var group: AccountGroup,
