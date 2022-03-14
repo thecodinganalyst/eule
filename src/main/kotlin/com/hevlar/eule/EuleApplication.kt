@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-@EnableConfigurationProperties(FinancialYear::class)
+@EnableConfigurationProperties(FinancialYear::class, CorsConfiguration::class)
 class EuleApplication
 
 fun main(args: Array<String>) {
