@@ -80,3 +80,19 @@ Feature: Account Management
   Scenario: Deleting a non-existent account
     When "/accounts" is called with "DELETE" with the params "/credit"
     Then HttpStatus 404 is expected
+
+  Scenario: Setting up end scenario for accounts
+    When "/accounts" is called with "POST" with the following data
+      | id    | name  | group   | currency | openBal | openDate   |
+      | cash  | Cash  | Assets  | SGD      | 100.00  | 2022-01-01 |
+    Then HttpStatus 201 is expected
+    When "/accounts" is called with "POST" with the following data
+      | id     | name        | group       | currency | openBal | openDate   |
+      | credit | Credit Card | Liabilities | SGD      | 0.00    | 2022-01-01 |
+    Then HttpStatus 201 is expected
+    When "/accounts" is called with "GET"
+    Then the following data list is returned
+      | id     | name        | group       | currency | openBal | openDate   |
+      | food   | Food        | Expenses    |          |         |            |
+      | cash   | Cash        | Assets      | SGD      | 100.00  | 2022-01-01 |
+      | credit | Credit Card | Liabilities | SGD      | 0.00    | 2022-01-01 |

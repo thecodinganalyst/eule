@@ -27,7 +27,4 @@ interface GeneralLedger<A: Any, J: Any, ACCOUNT: Account<A>, JOURNAL: JournalEnt
 
     fun getBalanceForAccount(account: ACCOUNT, currency: Currency, fromDate: LocalDate, toDate: LocalDate): BigDecimal
 
-    fun getTotalAmountForAccountByEntryAndCurrencyUntilDate(accountId: A , entryType: EntryType, currency: Currency, untilDate: LocalDate): BigDecimal
-
-    fun getTotalAmountForAccountByEntryAndCurrencyBetweenDates(accountId: A , entryType: EntryType, currency: Currency, fromDate: LocalDate, toDate: LocalDate): BigDecimal
 }

@@ -7,7 +7,6 @@ import io.cucumber.java8.En
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
-
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
@@ -21,14 +20,24 @@ class StepDefinitions: En {
 
     private var mapper: ObjectMapper = JsonMapper.builder().findAndAddModules().build()
 
+    private lateinit var data: Map<String, Any?>
+
+    companion object {
+        private const val ACCOUNT = "Account"
+        private const val JOURNAL_ENTRY = "JournalEntry"
+        private val apiRoutes = mapOf(Pair(ACCOUNT, "/accounts"), Pair(JOURNAL_ENTRY, "/journalEntry"))
+    }
+
     init {
 
         Given("the following {string} exists") { dataTypeName: String, dataTable: DataTable ->
             val jsonList = dataTable.asMaps().map { mapper.writeValueAsString(it) }
             val route = when(dataTypeName){
                 "Account" -> "/accounts"
+                "JournalEntry" -> "/journalEntry"
                 else -> throw IllegalArgumentException("$dataTypeName not recognized")
             }
+
             jsonList.map {
                 context.perform(
                     callApi("POST", route)
@@ -60,7 +69,7 @@ class StepDefinitions: En {
         }
 
         Then("the following data is returned") { dataTable: DataTable ->
-            val data = dataTable.asMaps().first().conditionMap()
+            data = dataTable.asMaps().first().conditionMap()
             context
                 .andExpect(
                     content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
@@ -85,6 +94,18 @@ class StepDefinitions: En {
                     map.keys.map {
                         jsonPath("$[$i].$it").value(map[it])
                     }
+                }.toTypedArray()
+            )
+        }
+
+        Then("the data has property {string} with the following data values") { property: String, dataTable: DataTable ->
+            val subData = dataTable.asMaps().first().conditionMap()
+            context.andExpectAll(
+                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
+                jsonPath("$['$property']").exists(),
+                jsonPath("$['$property']").isMap,
+                *subData.keys.map {
+                    jsonPath("$['$property']['$it']").value(subData[it])
                 }.toTypedArray()
             )
         }

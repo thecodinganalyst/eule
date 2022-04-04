@@ -12,38 +12,42 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 
-open class GenericBalanceSheetBuilder<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL : JournalEntry<J, A>>(
-    open val generalLedger: GeneralLedger<A, J, ACCOUNT, JOURNAL>,
-    open val chartOfAccounts: ChartOfAccounts<A, ACCOUNT>
-): BalanceSheetBuilder<A, ACCOUNT> {
+open class GenericBalanceSheetBuilder<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL : JournalEntry<J, A>, ACCOUNT_DISPLAY: Any>(
+    private val generalLedger: GeneralLedger<A, J, ACCOUNT, JOURNAL>,
+    private val chartOfAccounts: ChartOfAccounts<A, ACCOUNT>,
+    val accountDisplayFunction: (ACCOUNT) -> ACCOUNT_DISPLAY
+): BalanceSheetBuilder<ACCOUNT_DISPLAY> {
 
-    private lateinit var balanceSheet: GenericBalanceSheet<A, ACCOUNT>
+    open lateinit var balanceSheet: GenericBalanceSheet<ACCOUNT_DISPLAY>
 
-    override fun reset(): BalanceSheetBuilder<A, ACCOUNT> {
+    override fun reset(): BalanceSheetBuilder<ACCOUNT_DISPLAY> {
         balanceSheet = GenericBalanceSheet()
         return this
     }
 
-    override fun setBalanceDate(date: LocalDate): BalanceSheetBuilder<A, ACCOUNT> {
+    override fun setBalanceDate(date: LocalDate): BalanceSheetBuilder<ACCOUNT_DISPLAY> {
         balanceSheet.balanceDate = date
         return this
     }
 
-    override fun setCurrency(currency: Currency): BalanceSheetBuilder<A, ACCOUNT> {
+    override fun setCurrency(currency: Currency): BalanceSheetBuilder<ACCOUNT_DISPLAY> {
         balanceSheet.currency = currency
         return this
     }
 
-    override fun build(): BalanceSheet<A, ACCOUNT> {
+    override fun build(): BalanceSheet<ACCOUNT_DISPLAY> {
         balanceSheet.assets = getAccountBalancesForGroup(AccountGroup.Assets)
         balanceSheet.liabilities = getAccountBalancesForGroup(AccountGroup.Liabilities)
         return balanceSheet
     }
 
-    private fun getAccountBalancesForGroup(group: AccountGroup): Map<ACCOUNT, BigDecimal> {
+    open fun getAccountBalancesForGroup(group: AccountGroup): Map<ACCOUNT_DISPLAY, BigDecimal> {
         val accounts = chartOfAccounts.getAccountsByGroupAndCurrency(group, balanceSheet.currency)
-        return accounts.associateWith { account ->
-            (account.openBal ?: BigDecimal(0)) + generalLedger.getBalanceForAccount(account, balanceSheet.currency, balanceSheet.balanceDate)
+        return accounts.associateTo(mutableMapOf()) { account ->
+            Pair(
+                accountDisplayFunction(account),
+                (account.openBal ?: BigDecimal(0)) + generalLedger.getBalanceForAccount(account, balanceSheet.currency, balanceSheet.balanceDate)
+            )
         }
     }
 

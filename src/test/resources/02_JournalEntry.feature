@@ -1,9 +1,10 @@
 Feature: Journal Entry Management
   Scenario: Adding a journal entry
     Given the following "Account" exists
-      | id    | name  | group     | currency | openBal | openDate   |
-      | cash  | Cash  | Assets    | SGD      | 100.00  | 2022-01-01 |
-      | food  | Food  | Expenses  | SGD      |         |            |
+      | id     | name        | group       | currency | openBal | openDate   |
+      | food   | Food        | Expenses    |          |         |            |
+      | cash   | Cash        | Assets      | SGD      | 100.00  | 2022-01-01 |
+      | credit | Credit Card | Liabilities | SGD      | 0.00    | 2022-01-01 |
     When "/journalEntry" is called with "POST" with the following data
       | txDate     | description | currency | amount | debitAccountId | creditAccountId | postDate   | recurrence |
       | 2022-01-10 | Lunch       | SGD      | 5.00   | food           | cash            | 2022-01-10 |            |
@@ -11,7 +12,6 @@ Feature: Journal Entry Management
     And the following data is returned
       | txDate     | description | currency | amount | debitAccountId | creditAccountId   | postDate   | recurrence |
       | 2022-01-10 | Lunch       | SGD      | 5.00   | food           | cash              | 2022-01-10 |            |
-
 
   Scenario: Adding a journal entry with invalid data
     When "/journalEntry" is called with "POST" with the following data
@@ -55,3 +55,13 @@ Feature: Journal Entry Management
     Then the following data list is returned
       | id | txDate     | description | currency | amount | debitAccountId | creditAccountId | postDate   | recurrence |
       | 1  | 2022-01-10 | Lunch       | SGD      | 7.00   | food           | cash            | 2022-01-10 |            |
+
+  Scenario: Clearing journal entry records
+    When "/journalEntry" is called with "PUT" with the following data
+      | id | txDate     | description | currency | amount | debitAccountId | creditAccountId | postDate   | recurrence |
+      | 1  | 2022-01-10 | Lunch       | SGD      | 0.00   | food           | cash            | 2022-01-10 |            |
+    Then HttpStatus 200 is expected
+    When "/journalEntry" is called with "GET"
+    Then the following data list is returned
+      | id | txDate     | description | currency | amount | debitAccountId | creditAccountId | postDate   | recurrence |
+      | 1  | 2022-01-10 | Lunch       | SGD      | 0.00   | food           | cash            | 2022-01-10 |            |

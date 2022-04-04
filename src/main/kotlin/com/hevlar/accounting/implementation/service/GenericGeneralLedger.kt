@@ -52,45 +52,35 @@ open class GenericGeneralLedger<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL : J
     }
 
     override fun getBalanceForAccount(account: ACCOUNT, currency: Currency, untilDate: LocalDate): BigDecimal {
-        return getTotalAmountForAccountByEntryAndCurrencyUntilDate(account.id, account.group.entryType, currency, untilDate).minus(
-            getTotalAmountForAccountByEntryAndCurrencyUntilDate(account.id, EntryType.oppositeOf(account.group.entryType), currency, untilDate)
-        )
+        val debit = repository
+            .findByDebitAccountIdAndCurrencyAndTxDateLessThanEqual(account.id, currency, untilDate)
+            .fold(BigDecimal(0)){ acc, item -> acc + item.amount }
+        val credit = repository
+            .findByCreditAccountIdAndCurrencyAndTxDateLessThanEqual(account.id, currency, untilDate)
+            .fold(BigDecimal(0)){ acc, item -> acc + item.amount }
+
+        return if (account.group.entryType == EntryType.Debit){
+            debit - credit
+        }else{
+            credit - debit
+        }
     }
 
     override fun getBalanceForAccount(account: ACCOUNT, currency: Currency, fromDate: LocalDate, toDate: LocalDate): BigDecimal {
-        return getTotalAmountForAccountByEntryAndCurrencyBetweenDates(account.id, account.group.entryType, currency, fromDate, toDate).minus(
-            getTotalAmountForAccountByEntryAndCurrencyBetweenDates(account.id, EntryType.oppositeOf(account.group.entryType), currency, fromDate, toDate)
-        )
+
+        val debit = repository
+            .findByDebitAccountIdAndCurrencyAndTxDateBetween(account.id, currency, fromDate, toDate)
+            .fold(BigDecimal(0)){ acc, item -> acc + item.amount }
+        val credit = repository
+            .findByCreditAccountIdAndCurrencyAndTxDateBetween(account.id, currency, fromDate, toDate)
+            .fold(BigDecimal(0)){ acc, item -> acc + item.amount }
+
+        return if (account.group.entryType == EntryType.Debit){
+            debit - credit
+        }else{
+            credit - debit
+        }
+
     }
 
-    override fun getTotalAmountForAccountByEntryAndCurrencyUntilDate(
-        accountId: A,
-        entryType: EntryType,
-        currency: Currency,
-        untilDate: LocalDate
-    ): BigDecimal {
-        return if (entryType == EntryType.Debit){
-            repository.findByDebitAccountIdAndCurrencyAndTxDateLessThanEqual(accountId, currency, untilDate)
-                .fold(BigDecimal(0)){ acc, item -> acc + item.amount }
-        }else {
-            repository.findByCreditAccountIdAndCurrencyAndTxDateLessThanEqual(accountId, currency, untilDate)
-                .fold(BigDecimal(0)){ acc, item -> acc + item.amount }
-        }
-    }
-
-    override fun getTotalAmountForAccountByEntryAndCurrencyBetweenDates(
-        accountId: A,
-        entryType: EntryType,
-        currency: Currency,
-        fromDate: LocalDate,
-        toDate: LocalDate
-    ): BigDecimal {
-        return if (entryType == EntryType.Debit){
-            repository.findByDebitAccountIdAndCurrencyAndTxDateBetween(accountId, currency, fromDate, toDate)
-                .fold(BigDecimal(0)){ acc, item -> acc + item.amount }
-        }else {
-            repository.findByCreditAccountIdAndCurrencyAndTxDateBetween(accountId, currency, fromDate, toDate)
-                .fold(BigDecimal(0)){ acc, item -> acc + item.amount }
-        }
-    }
 }
