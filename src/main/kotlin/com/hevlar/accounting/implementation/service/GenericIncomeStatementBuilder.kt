@@ -12,30 +12,31 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 
-open class GenericIncomeStatementBuilder<A: Any, J: Any, ACCOUNT: Account<A>, JOURNAL: JournalEntry<J, A>> (
-    open val generalLedger: GeneralLedger<A, J, ACCOUNT, JOURNAL>,
-    open val chartOfAccounts: ChartOfAccounts<A, ACCOUNT>
-): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL> {
+open class GenericIncomeStatementBuilder<A: Any, J: Any, ACCOUNT: Account<A>, JOURNAL: JournalEntry<J, A>, ACCOUNT_DISPLAY: Any> (
+    private val generalLedger: GeneralLedger<A, J, ACCOUNT, JOURNAL>,
+    private val chartOfAccounts: ChartOfAccounts<A, ACCOUNT>,
+    val accountDisplayFunction: (ACCOUNT) -> ACCOUNT_DISPLAY
+): IncomeStatementBuilder<ACCOUNT_DISPLAY> {
 
-    private lateinit var incomeStatement: GenericIncomeStatement<A, ACCOUNT>
+    private lateinit var incomeStatement: GenericIncomeStatement<ACCOUNT_DISPLAY>
 
-    override fun reset(): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL> {
+    override fun reset(): IncomeStatementBuilder<ACCOUNT_DISPLAY> {
         incomeStatement = GenericIncomeStatement()
         return this
     }
 
-    override fun setPeriod(fromDate: LocalDate, toDate: LocalDate): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL> {
+    override fun setPeriod(fromDate: LocalDate, toDate: LocalDate): IncomeStatementBuilder<ACCOUNT_DISPLAY> {
         incomeStatement.fromDate = fromDate
         incomeStatement.toDate = toDate
         return this
     }
 
-    override fun setCurrency(currency: Currency): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL> {
+    override fun setCurrency(currency: Currency): IncomeStatementBuilder<ACCOUNT_DISPLAY> {
         incomeStatement.currency = currency
         return this
     }
 
-    override fun build(): IncomeStatement<A, ACCOUNT> {
+    override fun build(): IncomeStatement<ACCOUNT_DISPLAY> {
         incomeStatement.revenue = getAccountBalancesForGroup(AccountGroup.Revenue)
         incomeStatement.gains = getAccountBalancesForGroup(AccountGroup.Gains)
         incomeStatement.expenses = getAccountBalancesForGroup(AccountGroup.Expenses)
@@ -44,10 +45,13 @@ open class GenericIncomeStatementBuilder<A: Any, J: Any, ACCOUNT: Account<A>, JO
         return incomeStatement
     }
 
-    private fun getAccountBalancesForGroup(group: AccountGroup): Map<ACCOUNT, BigDecimal> {
-        val accounts = chartOfAccounts.getAccountsByGroupAndCurrency(group, incomeStatement.currency)
-        return accounts.associateWith { account ->
-            (account.openBal ?: BigDecimal(0)) + generalLedger.getBalanceForAccount(account, incomeStatement.currency, incomeStatement.fromDate, incomeStatement.toDate)
+    private fun getAccountBalancesForGroup(group: AccountGroup): Map<ACCOUNT_DISPLAY, BigDecimal> {
+        val accounts = chartOfAccounts.getAccountsByGroup(group)
+        return accounts.associateTo(mutableMapOf()) { account ->
+            Pair(
+                accountDisplayFunction(account),
+                (account.openBal ?: BigDecimal(0)) + generalLedger.getBalanceForAccount(account, incomeStatement.currency, incomeStatement.fromDate, incomeStatement.toDate)
+            )
         }
     }
 

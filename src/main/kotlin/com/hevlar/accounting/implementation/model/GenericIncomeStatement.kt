@@ -6,12 +6,12 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
 
-open class GenericIncomeStatement<A: Any, ACCOUNT: Account<A>>: IncomeStatement<A, ACCOUNT> {
+open class GenericIncomeStatement<ACCOUNT_DISPLAY: Any>: IncomeStatement<ACCOUNT_DISPLAY> {
     override lateinit var fromDate: LocalDate
     override lateinit var toDate: LocalDate
     override lateinit var currency: Currency
-    override lateinit var revenue: Map<ACCOUNT, BigDecimal>
-    override lateinit var expenses: Map<ACCOUNT, BigDecimal>
-    override lateinit var gains: Map<ACCOUNT, BigDecimal>
-    override lateinit var losses: Map<ACCOUNT, BigDecimal>
+    override lateinit var revenue: Map<ACCOUNT_DISPLAY, BigDecimal>
+    override lateinit var expenses: Map<ACCOUNT_DISPLAY, BigDecimal>
+    override lateinit var gains: Map<ACCOUNT_DISPLAY, BigDecimal>
+    override lateinit var losses: Map<ACCOUNT_DISPLAY, BigDecimal>
 }

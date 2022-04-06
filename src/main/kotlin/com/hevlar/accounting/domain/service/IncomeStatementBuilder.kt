@@ -6,14 +6,14 @@ import com.hevlar.accounting.domain.model.journal.JournalEntry
 import java.time.LocalDate
 import java.util.*
 
-interface IncomeStatementBuilder<A: Any, J: Any, ACCOUNT: Account<A>, JOURNAL: JournalEntry<J, A>> {
+interface IncomeStatementBuilder<ACCOUNT_DISPLAY: Any> {
 
-    fun reset(): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL>
+    fun reset(): IncomeStatementBuilder<ACCOUNT_DISPLAY>
 
-    fun setPeriod(fromDate: LocalDate, toDate: LocalDate): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL>
+    fun setPeriod(fromDate: LocalDate, toDate: LocalDate): IncomeStatementBuilder<ACCOUNT_DISPLAY>
 
-    fun setCurrency(currency: Currency): IncomeStatementBuilder<A, J, ACCOUNT, JOURNAL>
+    fun setCurrency(currency: Currency): IncomeStatementBuilder<ACCOUNT_DISPLAY>
 
-    fun build(): IncomeStatement<A, ACCOUNT>
+    fun build(): IncomeStatement<ACCOUNT_DISPLAY>
 
 }

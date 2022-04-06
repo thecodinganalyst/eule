@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service
 
 @Service
 class PersonalIncomeStatementBuilder(
-    override val generalLedger: PersonalGeneralLedger,
-    override val chartOfAccounts: PersonalChartOfAccounts
-) : GenericIncomeStatementBuilder<String, Long, PersonalAccount, PersonalEntry>(
+    val generalLedger: PersonalGeneralLedger,
+    val chartOfAccounts: PersonalChartOfAccounts
+): GenericIncomeStatementBuilder<String, Long, PersonalAccount, PersonalEntry, String>(
     generalLedger,
-    chartOfAccounts
-) {
-}
+    chartOfAccounts,
+    { PersonalAccount -> PersonalAccount.name }
+)
