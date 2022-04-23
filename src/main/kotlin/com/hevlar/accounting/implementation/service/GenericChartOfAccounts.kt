@@ -23,8 +23,14 @@ open class GenericChartOfAccounts<A :Any, J :Any, ACCOUNT: Account<A>, JOURNAL: 
             if (account.openDate == null) collector.add(BalanceSheetAccountOpenDateMissing())
             if (account.openBal == null) collector.add(BalanceSheetAccountOpenBalMissing())
             if (account.currency == null) collector.add(BalanceSheetAccountCurrencyMissing())
-            if (account.openDate!!.isBefore(financialYear.startDate)) collector.add(BalanceSheetAccountOpenDateBeforeFY())
-            if (account.openDate!!.isAfter(financialYear.endDate)) collector.add(BalanceSheetAccountOpenDateAfterFY())
+            if(account.openDate != null){
+                if (financialYear.startDate != null){
+                    if (account.openDate!!.isBefore(financialYear.startDate)) collector.add(BalanceSheetAccountOpenDateBeforeFY())
+                }
+                if (financialYear.endDate != null){
+                    if (account.openDate!!.isAfter(financialYear.endDate)) collector.add(BalanceSheetAccountOpenDateAfterFY())
+                }
+            }
         }
 
         collector.throwIfNotEmpty()

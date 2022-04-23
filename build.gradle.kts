@@ -25,9 +25,9 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.6.4")
-    implementation("org.springframework.boot:spring-boot-starter-web:2.6.4")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.6.6")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.6.6")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.hamcrest:hamcrest-all:1.3")
@@ -36,7 +36,7 @@ dependencies {
     implementation("org.slf4j:slf4j-api:1.7.36")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     testImplementation("com.ninja-squad:springmockk:3.1.1")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.4") {
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.6.6") {
         exclude(module = "mockito-core")
     }
     testImplementation("io.cucumber:cucumber-java8:7.2.3")
@@ -45,11 +45,11 @@ dependencies {
     testImplementation(group= "io.cucumber", name="cucumber-spring", version="6.10.4")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.8.2")
 
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:2.6.4")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:2.6.6")
 
-    implementation("org.springdoc:springdoc-openapi-data-rest:1.6.6")
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.6")
+    implementation("org.springdoc:springdoc-openapi-data-rest:1.6.7")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.7")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.7")
 }
 
 noArg {

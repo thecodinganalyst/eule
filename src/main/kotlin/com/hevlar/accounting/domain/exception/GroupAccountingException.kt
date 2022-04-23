@@ -2,7 +2,7 @@ package com.hevlar.accounting.domain.exception
 
 class GroupAccountingException: AccountingException() {
 
-    private val exceptionSet = mutableSetOf<AccountingException>()
+    val exceptionSet = mutableSetOf<AccountingException>()
 
     fun add(exception: AccountingException) {
         exceptionSet.add(exception)

@@ -37,4 +37,10 @@ open class PersonalAccount(
     @Column(name = "DUE_DAY")
     override var dueDay: Int?
 
-): Account<String>, CreditCardAccount
+): Account<String>, CreditCardAccount{
+    constructor(id: String, name: String, group: AccountGroup)
+            : this(id, name, group, null, null, null, null, null)
+
+    constructor(id: String, name: String, group: AccountGroup, currency: Currency?, openBal: BigDecimal?, openDate: LocalDate?)
+            : this(id, name, group, currency, openBal, openDate, null, null)
+}
