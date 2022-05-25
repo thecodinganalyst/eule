@@ -19,7 +19,6 @@ import org.springframework.data.repository.findByIdOrNull
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
-import javax.swing.GroupLayout
 import kotlin.NoSuchElementException
 
 internal class GenericChartOfAccountsTest {

@@ -62,6 +62,14 @@ class StepDefinitions: En {
             )
         }
 
+        When("{string} is called with {string} with the following queryParams") { route: String, method: String, dataTable: DataTable ->
+            val queryParams = dataTable.asMap().map { it.key + "=" + it.value }.joinToString("&")
+
+            context.perform(
+                callApi(method, "$route?$queryParams")
+            )
+        }
+
         When("{string} is called with {string}") { route: String, method: String ->
             context.perform(
                 callApi(method, route)
@@ -95,6 +103,16 @@ class StepDefinitions: En {
                         jsonPath("$[$i].$it").value(map[it])
                     }
                 }.toTypedArray()
+            )
+        }
+
+        Then("the following list is returned") { dataTable: DataTable ->
+            val dataList = dataTable.asList()
+            context.andExpectAll(
+                content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
+                jsonPath("$").isArray,
+                jsonPath("$.length()").value(dataList.size),
+                *dataList.mapIndexed { i, it -> jsonPath("$[$i]").value(it) }.toTypedArray()
             )
         }
 
