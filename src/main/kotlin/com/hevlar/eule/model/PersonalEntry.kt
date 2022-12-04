@@ -4,10 +4,10 @@ import com.hevlar.accounting.domain.model.journal.JournalEntry
 import com.hevlar.accounting.domain.model.journal.personal.CreditCardEntry
 import com.hevlar.accounting.domain.model.journal.Recurrence
 import com.hevlar.accounting.domain.model.journal.RecurringEntry
+import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
-import javax.persistence.*
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)

@@ -3,10 +3,10 @@ package com.hevlar.eule.model
 import com.hevlar.accounting.domain.model.account.Account
 import com.hevlar.accounting.domain.model.account.AccountGroup
 import com.hevlar.accounting.domain.model.account.personal.CreditCardAccount
+import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.*
-import javax.persistence.*
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
